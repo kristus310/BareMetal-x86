@@ -50,7 +50,7 @@ qemu-system-x86_64 -drive format=raw,file=disk.img,index=0,media=disk
 
 ## Disk layout
 
-| Sektor (BIOS) | dd seek | Obsah        |
+| Sector (BIOS) | dd seek | Content        |
 |---------------|---------|--------------|
 | 1             | 0       | Bootloader   |
 | 2             | 1       | App A        |
