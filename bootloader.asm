@@ -1,13 +1,13 @@
-[org 0x7c00]            ; V téhle adrese se nám spustí kód, protože BIOS vždy bootuje z této adresy
+[org 0x7c00]            ; BIOS always boots from this address
 
-start:                  ; Aby se nestal bad addresing
-    xor ax, ax          ;  - Vynulujeme AX
-    mov ds, ax          ;  - Nastaví DS na 0
-    mov es, ax          ;  - Nastaví ES na 0
+start:                  ; To prevent bad addressing
+    xor ax, ax          ;  - Zero out AX
+    mov ds, ax          ;  - Set DS to 0
+    mov es, ax          ;  - Set ES to 0
 
-    mov [boot_drive], dl; BIOS tady ukládá drive
+    mov [boot_drive], dl; BIOS stores the drive here
 
-    mov di, input_buffer; Nastavení DI na začátek paměti
+    mov di, input_buffer; Set DI to the start of the buffer
 
     mov si, welcome_msg
     call print_string
@@ -16,33 +16,33 @@ start:                  ; Aby se nestal bad addresing
     call print_string
 
 main:
-    call get_input      ; Čeká na input od uživatele
+    call get_input      ; Wait for user input
 
-    cmp al, 0x0D        ; Zmáčkl uživatel Enter?
+    cmp al, 0x0D        ; Did the user press Enter?
     je handle_enter
 
-    cmp al, 0x08        ; Zmáčkl uživatel Backspace?
+    cmp al, 0x08        ; Did the user press Backspace?
     je handle_backspace
 
-    stosb               ; Uložení znaku AL do DI
+    stosb               ; Store AL into DI
     call print_char
 
     jmp main
 
-; ----- FUNKCE -----
+; ----- FUNCTIONS -----
 load_sector:
-    mov ah, 0x02        ; BIOS funkce na čtení sektoru
-    mov al, 1           ; Kolik sektorů má přečíst (1 sektor = 512 bytů)
+    mov ah, 0x02        ; BIOS function to read a sector
+    mov al, 1           ; How many sectors to read (1 sector = 512 bytes)
     mov ch, 0
     mov dh, 0
     int 0x13
-    jc disk_error       ; Pokud nastala chyba, skoč na disk_error
+    jc disk_error       ; If an error occurred, jump to disk_error
     ret
 
 disk_error:
     mov si, disk_err_msg
     call print_string
-    jmp $               ; Nekonečná loop
+    jmp $               ; Infinite loop
 
 launch_app_a:
     mov si, app_a_message
@@ -50,8 +50,8 @@ launch_app_a:
 
     xor ax, ax
     mov es, ax          ; ES:BX = 0x0000:0x8000
-    mov bx, 0x8000      ; Načte aplikaci do adresy 0x8000
-    mov cl, 2           ; Sektor 2 na disku
+    mov bx, 0x8000      ; Load app to address 0x8000
+    mov cl, 2           ; Sector 2 on disk
     mov dl, [boot_drive]
     call load_sector
     jmp 0x8000
@@ -62,26 +62,26 @@ launch_app_b:
 
     xor ax, ax
     mov es, ax
-    mov bx, 0x8000      ; Načte aplikaci do adresy 0x8000
-    mov cl, 3           ; Sektor 2 na disku
+    mov bx, 0x8000      ; Load app to address 0x8000
+    mov cl, 3           ; Sector 3 on disk
     mov dl, [boot_drive]
     call load_sector
     jmp 0x8000
 
 
 print_string:
-    mov ah, 0x0e        ; BIOS funkce pro vykreslení grafiky
+    mov ah, 0x0e        ; BIOS function for rendering
 .loop:
-    lodsb               ; Načte SI do AL a inkrementne SI
-    cmp al, 0x00        ; Jestli AL = 0 tak to skočí do .done
+    lodsb               ; Load SI into AL and increment SI
+    cmp al, 0x00        ; If AL = 0, jump to .done
     je .done
     int 0x10
     jmp .loop
 .done:
-    ret                 ; Tady končí loop, vracíme se po call print
+    ret                 ; End of loop, return from call print
 
 print_char:
-    mov ah, 0x0e        ; BIOS funkce pro vykreslení grafiky
+    mov ah, 0x0e        ; BIOS function for rendering
     int 0x10
     ret
 
@@ -103,7 +103,7 @@ print_menu:
     ret
 
 get_input:
-    mov ah, 0x00        ; BIOS funkce pro čtení klávesy
+    mov ah, 0x00        ; BIOS function for reading a key
     int 0x16
     ret
 
@@ -119,14 +119,14 @@ handle_enter:
     jmp main
 
 print_newline:
-    mov ah, 0x0e        ; BIOS funkce pro vykreslení grafiky
+    mov ah, 0x0e        ; BIOS function for rendering
     mov al, 0x0D
     int 0x10
     mov al, 0x0A
     int 0x10
     ret
 
-check_buffer:           ; Jednoduchý If's
+check_buffer:           ; Simple if statements
     mov al, [input_buffer]
 
     cmp al, 'a'
@@ -147,13 +147,13 @@ check_buffer:           ; Jednoduchý If's
     ret
 
 handle_backspace:
-    dec di              ; V paměti se vráti o znak zpět, pro stosb
-    mov ah, 0x0e        ; BIOS funkce pro vykreslení grafiky
-    mov al, 0x08        ; Kurzor vlevo
+    dec di              ; Move back one character in memory, for stosb
+    mov ah, 0x0e        ; BIOS function for rendering
+    mov al, 0x08        ; Cursor left
     int 0x10
-    mov al, 0x20        ; Mezera
+    mov al, 0x20        ; Space
     int 0x10
-    mov al, 0x08        ; Kurzor znovu vlevo
+    mov al, 0x08        ; Cursor left again
     int 0x10
     jmp main
 
@@ -175,6 +175,6 @@ menu_bottom: db 0xC0, 0xC4, 0xC4, 0xC4, 0xC4, 0xC4, 0xC4, 0xC4, 0xC4, 0xC4
             db 0xD9, 0x0D, 0x0A, 0x00
 prompt:      db " > ", 0x00
 
-; ----- "Nastavení" pro BIOS -----
-times 510-($-$$) db 0x00  ; Byte sektor musí být dlouhý přesně 512 bytes, pro BIOS
-dw 0xaa55               ; BIOS bootuje jen pokud ten sektor končí na 0x55AA (malý endian)
+; ----- BIOS "Configuration" -----
+times 510-($-$$) db 0x00  ; Boot sector must be exactly 512 bytes, required by BIOS
+dw 0xaa55               ; BIOS only boots if the sector ends with 0x55AA (little endian)
