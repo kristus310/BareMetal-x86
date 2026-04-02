@@ -5,8 +5,10 @@ start:                  ; To prevent bad addressing
     mov ds, ax          ;  - Set DS to 0
     mov es, ax          ;  - Set ES to 0
 
+    cmp byte [boot_drive], 0 ; If the bootloader is rerun from any other app, it will skip setting the bootdrive
+    jne skip_save
     mov [boot_drive], dl; BIOS stores the drive here
-
+skip_save:
     mov di, input_buffer; Set DI to the start of the buffer
 
     mov si, welcome_msg
@@ -163,8 +165,8 @@ disk_err_msg: db "Disk read failed!", 0x0D, 0x0A, 0x00
 input_buffer: times 8 db 0x00
 welcome_msg: db "Hello and welcome to my bootloader!", 0x0D, 0X0A, 0x00
 
-app_a_message: db "Loading [Guess the number]...", 0x0D, 0X0A, 0x00
-app_b_message: db "Loading [Show the time]...", 0x0D, 0X0A, 0x00
+app_a_message: db "Loading [Guess number]...", 0x0D, 0X0A, 0x00
+app_b_message: db "Loading [Show time]...", 0x0D, 0X0A, 0x00
 
 menu_top:    db 0xDA, 0xC4, 0xC4, 0xC4, " SELECT APP ", 0xC4, 0xC4, 0xC4, 0xBF, 0x0D, 0x0A, 0x00
 menu_line1:  db 0xB3, " [A] Guess number ", 0xB3, 0x0D, 0x0A, 0x00
