@@ -10,7 +10,7 @@ Minimalist x86 assembly environment running directly on hardware. No OS, no laye
 - [x] Multi-app loading (bootloader -> app_a, app_b)
 - [x] Interactive command buffer with backspace support
 - [x] Box-drawing menu UI
-- [ ] Return to bootloader from app (Planned)
+- [x] Return to bootloader from app
 - [ ] More apps (Planned)
 
 ## Structure
