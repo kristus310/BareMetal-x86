@@ -62,3 +62,13 @@ qemu-system-x86_64 -drive format=raw,file=disk.img,index=0,media=disk
 - All I/O via BIOS interrupts (`int 0x10`, `int 0x13`, `int 0x16`)
 - Apps load at address `0x8000`, bootloader jumps there via `jmp 0x8000`
 - Boot sector must be exactly 512 bytes ending with `0x55AA`
+
+## Screenshots
+### Bootloader - main menu
+![Bootloader screenshot](screenshots/screenshot.png)
+
+### App A - Guess number
+![Guess number screenshot](screenshots/screenshot_app_a.png)
+
+### App B - Show time
+![Show time screenshot](screenshots/screenshot_app_b.png)
