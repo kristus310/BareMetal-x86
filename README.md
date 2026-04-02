@@ -11,6 +11,7 @@ Minimalist x86 assembly environment running directly on hardware. No OS, no laye
 - [x] Interactive command buffer with backspace support
 - [x] Box-drawing menu UI
 - [x] Return to bootloader from app
+- [ ] Make the apps more complex and detailed (Planned)
 - [ ] More apps (Planned)
 
 ## Structure
@@ -31,7 +32,7 @@ Requires `nasm` and `qemu` for testing.
 ```bash
 make                # Builds everything and creates disk.img
 make run            # Opens it in QEMU
-make clean          # Removes all .bin and disk.img
+make clean          # OPTIONAL - Removes all .bin and disk.img
 ```
 
 ### Manually

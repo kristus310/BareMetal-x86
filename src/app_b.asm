@@ -1,13 +1,16 @@
+; ----- App for showing time -----
+; BCD = Binary Coded Decimal :)
 [org 0x8000]
 
 start:
-    ; Read CMOS Real Time Clock
+; Read CMOS Real Time Clock
     mov ah, 0x02
-    int 0x1a            ; Get the time
+    int 0x1a            ; Get the time (CH=hours, CL=minutes, DH=seconds in BCD)
 
-    add ch, 0x02        ; Add 2 hours for your timezone (BCD format)
-    daa
-
+    mov al, ch
+    add al, 0x02        ; Add 2 hours for Czech timezone- not optimal its hardcoded
+    daa                 ; Corrects the math for BCD
+    mov ch, al          ; Store the corrected hour back in CH
     mov si, time_message
     call print_string
 

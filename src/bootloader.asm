@@ -1,3 +1,4 @@
+; ----- The bootloader -----
 [org 0x7c00]            ; BIOS always boots from this address
 
 start:                  ; To prevent bad addressing
