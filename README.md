@@ -2,7 +2,7 @@
 
 Minimalist x86 assembly environment running directly on hardware. No OS, no layers, just code.
 
-![Bootloader screenshot](assets/screenshot.png)
+![Bootloader screenshot](screenshots/screenshot.png)
 
 ## Current State
 - [x] Custom 512-byte bootloader
