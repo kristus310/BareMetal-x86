@@ -8,7 +8,7 @@ disk.img: $(BINS)
 	dd if=app_a.bin      of=disk.img bs=512 seek=1 conv=notrunc
 	dd if=app_b.bin      of=disk.img bs=512 seek=2 conv=notrunc
 
-%.bin: %.asm
+%.bin: src/%.asm
 	nasm -f bin $< -o $@
 
 run: disk.img

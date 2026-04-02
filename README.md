@@ -2,6 +2,8 @@
 
 Minimalist x86 assembly environment running directly on hardware. No OS, no layers, just code.
 
+![Bootloader screenshot](assets/screenshot.png)
+
 ## Current State
 - [x] Custom 512-byte bootloader
 - [x] Basic I/O via BIOS interrupts
@@ -13,10 +15,13 @@ Minimalist x86 assembly environment running directly on hardware. No OS, no laye
 
 ## Structure
 ```
-├── bootloader.asm  # Main file - the bootloader
-├── app_a.asm       # Sector 2 / app A - Guess The Number
-├── app_b.asm       # Sector 3 / app B - Show the time
-└── Makefile        # Project builder - Makefile
+├── src/
+│   ├── bootloader.asm  # Main file - the bootloader
+│   ├── app_a.asm       # Sector 2 / app A - Guess The Number
+│   └── app_b.asm       # Sector 3 / app B - Show the time
+├── assets/
+│   └── screenshot.png
+└── Makefile
 ```
 
 ## Building
@@ -31,9 +36,9 @@ make clean          # Removes all .bin and disk.img
 
 ### Manually
 ```bash
-nasm -f bin bootloader.asm -o bootloader.bin
-nasm -f bin app_a.asm -o app_a.bin
-nasm -f bin app_b.asm -o app_b.bin
+nasm -f bin src/bootloader.asm -o bootloader.bin
+nasm -f bin src/app_a.asm -o app_a.bin
+nasm -f bin src/app_b.asm -o app_b.bin
 
 dd if=/dev/zero of=disk.img bs=512 count=2880
 dd if=bootloader.bin of=disk.img bs=512 seek=0 conv=notrunc
