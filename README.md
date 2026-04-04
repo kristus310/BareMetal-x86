@@ -62,6 +62,7 @@ qemu-system-x86_64 -drive format=raw,file=disk.img,index=0,media=disk
 - All I/O via BIOS interrupts (`int 0x10`, `int 0x13`, `int 0x16`)
 - Apps load at address `0x8000`, bootloader jumps there via `jmp 0x8000`
 - Boot sector must be exactly 512 bytes ending with `0x55AA`
+- Project was made for and tested with QEMU and NASM.
 
 ## Screenshots
 ### Bootloader - main menu
